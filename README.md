@@ -1,4 +1,4 @@
-node-just-template-it
+just-template-it
 =====================
 
 Simple internally used template system for nodejs.
