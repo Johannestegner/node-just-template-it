@@ -1,0 +1,9 @@
+This is a example file to show how {package} works.
+This is just a {project.name}.
+We include a footer here:
+{include|_footer}
+
+Hope you like the module!
+
+Regards
+- {user}
