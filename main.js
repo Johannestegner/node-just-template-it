@@ -5,6 +5,7 @@ var fs = require('fs');
 module.exports = (function() {
   var _templatePath = null; // Path to the templates base directory.
   var _loadedFiles = {};  // Files already loaded, stored in memory.
+  var _fileType = "jti";  // The templates file type.
 
   /**
    * Fetch template file from filesystem.
@@ -15,7 +16,7 @@ module.exports = (function() {
     if(_loadedFiles[type] !== undefined) {
       callback(undefined , _loadedFiles[type]);
     } else {
-      var path = _templatePath + type + ".jti";
+      var path = util.format("%s%s.%s", _templatePath, type, _fileType);
       fs.exists(path, function(exists){
         if(!exists) {
           callback(util.format("Failed to fetch template. File does not exist. (%s)", path));
@@ -129,10 +130,14 @@ module.exports = (function() {
   };
 
   /**
-   * Initialize the Template engine.
+   * Initialise the Template engine.
    * @param {string} templatePath Path to the template files base directory.
+   * @param {string} fileType File type of the template files, optional, default is jti.
    */
-  this.init = function(templatePath) {
+  this.init = function(templatePath, fileType) {
+    if(fileType !== undefined) {
+      _fileType = fileType;
+    }
     _templatePath = templatePath;
     if(!fs.existsSync(templatePath)){
       throw new Error("Failed to initialize just-template-it, defined path does not exist.");
@@ -143,10 +148,14 @@ module.exports = (function() {
    * Change the path of the templates base directory.
    * Observe, this will truncate the currently loaded template files.
    * @param {string} newPath Path to the template files base directory.
+   * @param {string} fileType File type of the template files, optional, default is jti.
    */
-  this.setTemplatePath = function(newPath) {
+  this.setTemplatePath = function(newPath, fileType) {
     if(!fs.existsSync(newPath)){
       throw new Error("Failed to initialize just-template-it, defined path does not exist.");
+    }
+    if(fileType !== undefined) {
+      _fileType = fileType;
     }
     _templatePath = newPath;
     _loadedFiles = [];
