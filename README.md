@@ -12,8 +12,7 @@ var templates = require('just-template-it');
 templates.init("/path/to/templates", "type");
 ```
 
-The above code will initialise the system and set the base path to `/path/to/templates`, it will also set the file type  
-of the templates to `.type` (the second param is optional, default filetype is `jti`).  
+The above code will initialise the system and set the base path to `/path/to/templates`, it will also set the file type of the templates to `.type` (the second param is optional, default filetype is `jti`).  
 The path and filetype can be changed by using the `setTemplatePath(path, type)` function.  
 **Observe:** *setting new path will remove all currently loaded templates.*
 
