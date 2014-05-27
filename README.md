@@ -31,11 +31,13 @@ templates.getTemplate('nameOfTemplate', {
   }
 });
 ```
-This snippet will fetch a template named `nameOfTemplate`, which as a file in the filesystem should be `/path/to/templates/nameOfTemplate.type`.  
-It will also pas in some `data` (second parameter object) and then, as a last argument, a callback, with two parameters.  
-Error will be undefined if no error, else a `string` the second parameter will be the formatted template as `string`.  
-The data object is used to replace all placeholder variables in the template file (see more in next part of the readme).
 
+`getTemplate` takes three arguments:  
+First is the name of the template, this is without file end, so the `nameOfTemplate`template in the above example should in the filesystem be at:  `/path/to/templates/nameOfTemplate.type`.  
+Second parameter is the `data` object that the template system should replace placeholders with (see further down in readme for more info about placeholders in the template files).  
+And the third and last parameter is a callback function. The callback takes two args:  
+First is error, which will only be set if there was an error during run.  
+Second is the template, formatted and ready withe all placeholders replaced with the data passed in.
 
 ### The template files.
 The template files is quite simple.  
@@ -62,4 +64,4 @@ Just-template-it supports the following placeholders:
   * Arrays: `"arr": [1,2,3]` - `{arr[1]}`
 
 
-Check out the example code in the example dir if more info about usage is wanted.
+Check out the example code in the example dir if more info about usage is needed.
