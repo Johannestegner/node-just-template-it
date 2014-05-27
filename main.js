@@ -100,7 +100,24 @@ module.exports = (function() {
       var regex = new RegExp("\\{" + key + "\\}", 'g');
       text = text.replace(regex, val.toString());
     } else if(util.isArray(val)) {
-      util.error("Error while setting up template. Array argument, but array args is not yet implemented.");
+      var regex = new RegExp("\\{" + key + "\\[(.+)\\]\\}", 'g');
+      var match;
+      var txt = text; // Create copy, cause the original will be replaced inside the while loop.
+      while(match = regex.exec(txt)) {
+        if(match.length >= 2) {
+          var index = parseInt(match[1], 10);
+          if(typeof index === "number") {
+            if(val.length <= index || index < 0) {
+              util.error("Failed to replace array index, index was out of bounds.");
+            } else {
+              var replaceRegex = new RegExp("\\{" + key + "\\[" + index.toString() + "\\]\\}", 'g');
+              text = text.replace(replaceRegex, val[index].toString());
+            }
+          } else {
+            util.error("Failed to replace array index, index was not a number.");
+          }
+        }
+      }
     } else {
       for(var innerKey in val){
         if (val.hasOwnProperty(innerKey)) {

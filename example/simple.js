@@ -9,7 +9,8 @@ templates.getTemplate("welcome", {
   , "project": {
     "name": "example project"
     , "id": "1"
-  }
+  },
+  "list": [1,2,"astring", 5,78]
 }, function(error, formattedText){
   if(error) {
     util.error(error);
