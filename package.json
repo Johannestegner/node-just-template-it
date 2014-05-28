@@ -1,22 +1,21 @@
 {
-	"name": "just-template-it",
-	"description": "Simple templating system.",
-	"version": "0.0.1",
-	"author": {
-		"name": "Johannes Tegnér",
-		"email": "jitedev@gmail.com"
-	},
-	"keywords": [
-      "templates"
-    , "simple"
-	],
-	"repository": {
-      "type": "git"
-    , "url": "https://github.com/Johannestegner/node-just-template-it"
-	},
-	"main": "./main.js",
-	"engines": {
-		"node": ">= 0.8.0"
-	},
-	"readmeFilename": "README.md"
+  "name": "just-template-it",
+  "description": "Simple templating system.",
+  "version": "0.0.1",
+  "author": {
+    "name": "Johannes Tegnér",
+    "email": "jitedev@gmail.com"
+  },
+  "keywords": [
+    "template"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Johannestegner/node-just-template-it"
+  },
+  "main": "./main.js",
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "readmeFilename": "README.md"
 }

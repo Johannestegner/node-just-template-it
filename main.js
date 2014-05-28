@@ -1,8 +1,7 @@
-// Load required node modules.
-var util = require('util');
-var fs = require('fs');
-
 module.exports = (function() {
+
+  var util = require('util');
+  var fs = require('fs');
   var _templatePath = null; // Path to the templates base directory.
   var _loadedFiles = {};  // Files already loaded, stored in memory.
   var _fileType = "jti";  // The templates file type.
@@ -17,42 +16,39 @@ module.exports = (function() {
       callback(undefined , _loadedFiles[type]);
     } else {
       var path = util.format("%s%s.%s", _templatePath, type, _fileType);
-      fs.exists(path, function(exists){
-        if(!exists) {
-          callback(util.format("Failed to fetch template. File does not exist. (%s)", path));
-        } else {
-          fs.readFile(path, function(error, data){
-            if(error) {
-              callback("Failed to fetch template. Failed to read file.");
-            } else {
-              _loadedFiles[type] = data.toString();
-              _getFile(type, callback);
-            }
-          });
-        }
-      });
+      if(fs.existsSync(path)) {
+        fs.readFile(path, function(error, data){
+          if(error) {
+            callback("Failed to fetch template. Failed to read file.");
+          } else {
+            _loadedFiles[type] = data.toString();
+            _getFile(type, callback);
+          }
+        });
+      } else {
+        callback(util.format("Failed to fetch template. File does not exist. (%s)", path));
+      }
     }
   };
 
-  var includeRegex = new RegExp("\\{include\\|(.+)\\}", 'g');
-
   /**
-   * Simple iterator function.
+   * Simple recursive iterator function.
+   * Will run an action (function(item, next)) on every item in passed array, and when done with all, call 'done' callback.
    * @param {Array} array List to iterate
    * @param {function} func Action to run: function(item, next) - where next needs to be called to iterate to next object. Error can be passed in next, and if that is done, function will end with errror callback.
    * @param {function} done Callback that runs when the iteration is done: function(error) - where error is set if any error occurred.
    * @param {undefined|string} e Internally used, do not call function with this set.
    */
-  var _foreachSeries = function(array, func, done, e) {
+  var _foreach = function(array, func, done, e) {
     if(array.length === 0){
       return done(e);
     }
     var current = array.splice(0,1);
     func(current, function(error){
       if(error){
-        _foreachSeries([], null, done, error);
+        _foreach([], null, done, error);
       } else {
-        _foreachSeries(array, func, done, undefined);
+        _foreach(array, func, done, undefined);
       }
     });
   };
@@ -69,18 +65,19 @@ module.exports = (function() {
     } else {
       var match;
       var includes = [];
+      var includeRegex = new RegExp("\\{include\\|(.+)\\}", 'g');
       while((match = includeRegex.exec(template)) !== null) {
         includes.push(match[1]);
       }
-      _foreachSeries(includes, function(templateName, next) {
+      _foreach(includes, function(templateName, next) {
         _getFile(templateName, function(error, includeAsString){
           if(error){
-            next(error);
+            util.error(error);
           } else {
             var replaceEx = new RegExp("\\{include\\|" + templateName + "\\}", "g");
             template = template.replace(replaceEx, includeAsString);
-            next();
           }
+          next();
         }.bind(templateName));
       }, function(error) {
         callback(error, template)
@@ -133,6 +130,7 @@ module.exports = (function() {
    * Initialise the Template engine.
    * @param {string} templatePath Path to the template files base directory.
    * @param {string} fileType File type of the template files, optional, default is jti.
+   * @returns {object} the just-template-it object.
    */
   this.init = function(templatePath, fileType) {
     if(fileType !== undefined) {
@@ -142,6 +140,7 @@ module.exports = (function() {
     if(!fs.existsSync(templatePath)){
       throw new Error("Failed to initialize just-template-it, defined path does not exist.");
     }
+    return this;
   };
 
   /**
@@ -152,13 +151,14 @@ module.exports = (function() {
    */
   this.setTemplatePath = function(newPath, fileType) {
     if(!fs.existsSync(newPath)){
-      throw new Error("Failed to initialize just-template-it, defined path does not exist.");
+      util.error("Failed to set new template path, defined path does not exist.");
+    } else {
+      if(fileType !== undefined) {
+        _fileType = fileType;
+      }
+      _templatePath = newPath;
+      _loadedFiles = [];
     }
-    if(fileType !== undefined) {
-      _fileType = fileType;
-    }
-    _templatePath = newPath;
-    _loadedFiles = [];
   };
 
   /**

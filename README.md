@@ -10,6 +10,8 @@ Initialise the Template system:
 ```javascript
 var templates = require('just-template-it');
 templates.init("/path/to/templates", "type");
+// Or just:
+var templates = require('just-template-it').init("/path/to/templates", "type");
 ```
 
 The above code will initialise the system and set the base path to `/path/to/templates`, it will also set the file type of the templates to `.type` (the second param is optional, default filetype is `jti`).  
@@ -24,7 +26,7 @@ templates.getTemplate('nameOfTemplate', {
   "aObj": {"aInt": 5},
   "array": [1,"test",9]
 }, function(error, formattedTemplate) {
-  if(errror) {
+  if(error) {
     //
   } else {
     //
