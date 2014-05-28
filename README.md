@@ -1,6 +1,6 @@
 just-template-it
 =====================
-A simple template system used for various tasks in internal projects.  
+A simple template system.  
 
 [![NPM](https://nodei.co/npm/just-template-it.png?downloads=true&stars=true)](https://nodei.co/npm/just-template-it/)
  
